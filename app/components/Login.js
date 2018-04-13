@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 import { Container, Content, Text, Label, Input, Button, Item } from 'native-base';
+
+import auth from '../lib/auth';
 
 const styles = StyleSheet.create({
   cellContainer: {
@@ -27,15 +29,21 @@ const styles = StyleSheet.create({
     color: 'red',
     padding: 5,
   },
+  anchor: {
+    marginTop: 15,
+    color: 'blue',
+  },
 });
 
 export default class LoginScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      email: '',
+      username: '',
       password: '',
+      name: '',
       message: '',
+      signUp: true,
     };
   }
 
@@ -43,42 +51,34 @@ export default class LoginScreen extends Component {
     this.setState({ message });
   }
 
-  userLogin = () => {
+  submitAction = () => {
     const params = {
-      email: this.state.email,
+      username: this.state.username,
       password: this.state.password,
+      name: this.state.name,
     };
 
-    if (!params.email || !params.password) {
-      this.setMessage('Both fields are required');
-      return;
+    if (this.state.signUp) {
+      return auth.submitRegistration(params, this.setMessage);
     }
 
-    const URI = 'https://0yrd46t4w3.execute-api.eu-central-1.amazonaws.com/dev/auth/login';
-  
-    axios.post(URI, params)
-      .then((response) => {
-        if (!response.status === 200) {
-          console.log('Authentication of terminal failed. Status is ', response.status);
-          this.setMessage('Could not login. Try again.');
-          return;
-        }
-
-      }).catch((err) => {
-        console.log(err.response);
-        const errMessage = err.response.data.message || 'Could not perform login';
-        this.setMessage(errMessage);
-      });
+    return auth.submitLogin(params, this.setMessage);
   }
 
-  clearEmail = () => {
-    this.email.setNativeProps({ text: '' });
-    this.setState({ email: '' });
+  clearUsername = () => {
+    this.username.setNativeProps({ text: '' });
+    this.setState({ username: '' });
   }
 
   clearPassword = () => {
     this.password.setNativeProps({ text: '' });
     this.setState({ password: '' });
+  }
+
+  toggleSignUp = () => {
+    this.setState({
+      signUp: !this.state.signUp
+    });
   }
 
   render() {
@@ -88,13 +88,13 @@ export default class LoginScreen extends Component {
           <Text style={styles.header}>Welcome</Text>
 
           <Item floatingLabel style={styles.item}>
-            <Label>Email</Label>
+            <Label>Username</Label>
             <Input
-              getRef={component => this.email = component}
-              onChangeText={email => this.setState({ email })}
+              getRef={component => this.username = component}
+              onChangeText={username => this.setState({ username })}
               autoFocus
-              onFocus={this.clearEmail}
-              onSubmitEditing={this.userLogin}
+              onFocus={this.clearUsername}
+              onSubmitEditing={this.submitAction}
             />
           </Item>
 
@@ -105,9 +105,19 @@ export default class LoginScreen extends Component {
               secureTextEntry
               onChangeText={password => this.setState({ password })}
               onFocus={this.clearPassword}
-              onSubmitEditing={this.userLogin}
+              onSubmitEditing={this.submitAction}
             />
           </Item>
+
+          {!!this.state.signUp && (
+            <Item floatingLabel>
+            <Label>Name</Label>
+            <Input
+              onChangeText={name => this.setState({ name })}
+              onSubmitEditing={this.submitAction}
+            />
+          </Item>
+          )}
 
           {!!this.state.message && (
             <Text style={styles.message}>
@@ -115,13 +125,19 @@ export default class LoginScreen extends Component {
             </Text>
           )}
 
+        <TouchableOpacity onPress={this.toggleSignUp}>
+          <Text style={styles.anchor}>
+            { this.state.signUp ? 'Already have account?' : "Don't have account?" }
+          </Text>
+        </TouchableOpacity>
+
           <Button
             full
             info
             style={styles.button}
-            onPress={this.userLogin}
+            onPress={this.submitAction}
           >
-            <Text>Log in</Text>
+            <Text>{ this.state.signUp ? 'Sign up' : 'Login' }</Text>
           </Button>
 
         </Content>
