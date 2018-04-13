@@ -1,14 +1,25 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { Component } from 'react';
+import { Text, View } from 'react-native';
 import { Root } from "native-base";
 import { Font, AppLoading } from "expo";
 
 import Login from './app/components/Login'
+import Main from './app/components/Main'
 
-export default class App extends React.Component {
+import storage from './app/lib/storage';
+
+export default class App extends Component {
   constructor(props) {
     super(props);
-    this.state = { loading: true };
+    this.state = {
+      loading: true
+    };
+
+    this.logIn = this.logIn.bind(this);
+  }
+
+  logIn() {
+    this.setState({loggedIn: true});
   }
 
   async componentWillMount() {
@@ -17,7 +28,19 @@ export default class App extends React.Component {
       Roboto_medium: require("native-base/Fonts/Roboto_medium.ttf")
     });
     this.setState({ loading: false });
+    storage.load({
+      key: 'jwt',
+      autoSync: false,
+      syncInBackground: false,
+    })
+      .then(() => {
+        this.setState({ loggedIn: true });
+      })
+      .catch((err) => {
+        this.setState({ loggedIn: false });
+      });
   }
+
   render() {
     if (this.state.loading) {
       return (
@@ -26,17 +49,11 @@ export default class App extends React.Component {
         </Root>
       );
     }
-    return (
-      <Login />
-    );
+
+    if (this.state.loggedIn) {
+      return <Main />;
+    }
+
+    return <Login logIn = { this.logIn } />;
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

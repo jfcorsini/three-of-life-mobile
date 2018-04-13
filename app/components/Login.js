@@ -59,10 +59,10 @@ export default class LoginScreen extends Component {
     };
 
     if (this.state.signUp) {
-      return auth.submitRegistration(params, this.setMessage);
+      return auth.submitRegistration(params, this.props.logIn, this.setMessage);
     }
 
-    return auth.submitLogin(params, this.setMessage);
+    return auth.submitLogin(params, this.props.logIn, this.setMessage);
   }
 
   clearUsername = () => {
