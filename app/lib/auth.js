@@ -54,7 +54,14 @@ const submitRegistration = (params, logIn, setMessage) => {
     });
 };
 
+const logOut = () => {
+  storage.remove({
+    key: 'jwt',
+  });
+};
+
 module.exports = {
   submitLogin,
   submitRegistration,
+  logOut,
 };
