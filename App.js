@@ -14,7 +14,7 @@ export default class App extends Component {
     this.state = {
       loading: true,
       currentTree:{
-        uri: 'https://s3.eu-central-1.amazonaws.com/treeoflifesuperapp/birch_3_night.png'
+        uri: 'https://s3.eu-central-1.amazonaws.com/treeoflifesuperapp/Trees/garden_day.png'
       }
     };
 

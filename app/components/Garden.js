@@ -56,9 +56,6 @@ const styles = StyleSheet.create({
     'flexDirection': 'row',
     justifyContent: 'space-evenly',
   },
-  logOutButton: {
-    alignSelf: 'flex-end',
-  },
   'topbar': {
     'flexDirection': 'row',
     'flex': 1,
@@ -91,7 +88,10 @@ export default class GardenScreen extends Component {
     return "heeloo";
   } 
   render() {
-    let logoutButton={ 'uri': 'https://s3.eu-central-1.amazonaws.com/treeoflifesuperapp/Asset+4%404x.png'};
+    let seedButton={ 'uri': 'https://s3.eu-central-1.amazonaws.com/treeoflifesuperapp/Buttons/seed_button.png'};
+    let waterButton={ 'uri': 'https://s3.eu-central-1.amazonaws.com/treeoflifesuperapp/Buttons/water_button.png'};
+    let logoutButton={ 'uri': 'https://s3.eu-central-1.amazonaws.com/treeoflifesuperapp/Buttons/account_button.png'};
+    let seedButton={ 'uri': 'https://s3.eu-central-1.amazonaws.com/treeoflifesuperapp/Buttons/seed_button.png'};
 
     return (
 
@@ -107,9 +107,8 @@ export default class GardenScreen extends Component {
       </View>
 
       <View style={styles.footer}>
-      <TreeButton button={logoutButton}  onPress={this.onPress} style={styles.logOutButton}/>
-      <TreeButton button={logoutButton}  onPress={this.onPress} style={styles.logOutButton}/>
-      <TreeButton button={logoutButton}  onPress={this.onPress} style={styles.logOutButton}/>
+      <TreeButton button={seedButton}  onPress={this.onPress} style={styles.logOutButton}/>
+      <TreeButton button={waterButton}  onPress={this.onPress} style={styles.logOutButton}/>
       <TreeButton button={logoutButton}  onPress={this.onPress} style={styles.logOutButton}/>
       </View>
 
