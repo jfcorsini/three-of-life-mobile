@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Text, View, Image, StyleSheet, ImageBackground} from 'react-native';
+import {Text, View, Image, StyleSheet, ImageBackground, TouchableOpacity} from 'react-native';
 import SvgUri from 'react-native-svg-uri';
 
 const resizeMode = 'center';
@@ -38,20 +38,53 @@ const styles = StyleSheet.create({
     marginTop: 15,
     color: 'blue',
   },
+  logoutButton: {
+    height: 60,
+    width: 60,
+    right: 20,
+    top: 100,
+  },
+  treeButton: {
+    height: 60,
+    width: 60,
+  },
 });
 
 
+
+class TreeButton extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+      return (
+      <TouchableOpacity onPress={this.props.onPress}>
+        <Image style={styles.treeButton} source={this.props.button}/>
+      </TouchableOpacity>
+      );
+  }
+}
 
 export default class GardenScreen extends Component {
   constructor(props) {
     super(props);
   }
 
+  onPress() {
+    return "heeloo";
+  } 
   render() {
+    let logoutButton={ 'uri': 'https://s3.eu-central-1.amazonaws.com/treeoflifesuperapp/Asset+4%404x.png'};
+
     return (
 
       <ImageBackground source={this.props.tree} style={styles.mainImage}>
-      <Text style={styles.header}>Hellooo wisconson ?? !!!!</Text>
+
+
+      <TreeButton button={logoutButton}  onPress={this.onPress}/>
+
+      <Text style={styles.header}>CC</Text>
       </ImageBackground>
 
       );
