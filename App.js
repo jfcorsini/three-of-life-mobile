@@ -20,7 +20,7 @@ export default class App extends Component {
   }
 
   logIn() {
-    this.setState({loggedIn: true});
+    this.setState({ loggedIn: true });
   }
 
   async componentWillMount() {

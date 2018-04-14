@@ -3,6 +3,7 @@ import {Text, View, Image, StyleSheet, ImageBackground, TouchableOpacity} from '
 import SvgUri from 'react-native-svg-uri';
 
 import storage from '../lib/storage';
+import TreeButton from './TreeButton';
 import axios from 'axios';
 
 const resizeMode = 'center';
@@ -59,26 +60,11 @@ const styles = StyleSheet.create({
     'flexDirection': 'row',
     justifyContent: 'space-evenly',
   },
-  'topbar': {
-    'flexDirection': 'row',
-    'flex': 1,
-  }
-
+  topbar: {
+    flexDirection: 'row',
+    flex: 1,
+  },
 });
-
-class TreeButton extends Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    return (
-      <TouchableOpacity onPress={this.props.onPress}>
-      <Image style={styles.treeButton} source={this.props.button}/>
-      </TouchableOpacity>
-      );
-  }
-}
 
 export default class GardenScreen extends Component {
   constructor(props) {
@@ -136,7 +122,7 @@ export default class GardenScreen extends Component {
             })
           })
           .catch((err) => {
-            console.log('Something weird happened when creating tree', err);
+            console.log('Something weird happened when updating tree', err);
           });
       });
   }
@@ -146,7 +132,7 @@ export default class GardenScreen extends Component {
       key: 'tree',
       autoSync: false,
       syncInBackground: false,
-      expi
+      expires: null,
     })
     .then(() => {
       this.setState({ hasTree: true });
@@ -189,7 +175,7 @@ export default class GardenScreen extends Component {
           </View>
           
           <View style={styles.footer}>
-          {this.state.hasTree && (
+          {!this.state.hasTree && (
             <TreeButton button={seedButton}  onPress={this.createTree} style={styles.logOutButton}/>
           )}
             <TreeButton button={waterButton}  onPress={this.updateTree} style={styles.logOutButton}/>
