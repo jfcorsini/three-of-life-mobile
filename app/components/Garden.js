@@ -84,7 +84,6 @@ export default class GardenScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      defaultBackground: 'https://s3.eu-central-1.amazonaws.com/treeoflifesuperapp/garden_day.png',
       background: '',
       death: null,
     }
@@ -102,8 +101,9 @@ export default class GardenScreen extends Component {
         const uri = 'https://85yfxbqh90.execute-api.eu-central-1.amazonaws.com/dev/tree/create';
         axios.post(URI, {}, { headers: { Authorization: jwt } })
           .then((response) => {
-            if (!response.status === 201) {
+            if (response.status !== 201) {
               console.log('Creating tree failed. Status is ', response.status);
+              return;
             }
             this.setState({hasTree: true});
             storage.save({
@@ -126,8 +126,9 @@ export default class GardenScreen extends Component {
         const uri = 'https://85yfxbqh90.execute-api.eu-central-1.amazonaws.com/dev/tree/update';
         axios.post(URI, {}, { headers: { Authorization: jwt } })
           .then((response) => {
-            if (!response.data === 200) {
+            if (response.data !== 200) {
               console.log('Updating tree failed. Status is ', response.status, 'and data is', response.data);
+              return;
             }
             this.setState({
               background: response.data.image,
