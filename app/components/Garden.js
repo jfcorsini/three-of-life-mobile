@@ -89,9 +89,12 @@ export default class GardenScreen extends Component {
   } 
   render() {
     let seedButton={ 'uri': 'https://s3.eu-central-1.amazonaws.com/treeoflifesuperapp/Buttons/seed_button.png'};
+
     let waterButton={ 'uri': 'https://s3.eu-central-1.amazonaws.com/treeoflifesuperapp/Buttons/water_button.png'};
+
     let logoutButton={ 'uri': 'https://s3.eu-central-1.amazonaws.com/treeoflifesuperapp/Buttons/account_button.png'};
-    let seedButton={ 'uri': 'https://s3.eu-central-1.amazonaws.com/treeoflifesuperapp/Buttons/seed_button.png'};
+
+    let shamanButton = { 'uri': 'https://s3.eu-central-1.amazonaws.com/treeoflifesuperapp/Buttons/summon_shaman_button.png'};
 
     return (
 
@@ -109,6 +112,7 @@ export default class GardenScreen extends Component {
       <View style={styles.footer}>
       <TreeButton button={seedButton}  onPress={this.onPress} style={styles.logOutButton}/>
       <TreeButton button={waterButton}  onPress={this.onPress} style={styles.logOutButton}/>
+      <TreeButton button={shamanButton}  onPress={this.onPress} style={styles.logOutButton}/>
       <TreeButton button={logoutButton}  onPress={this.onPress} style={styles.logOutButton}/>
       </View>
 
