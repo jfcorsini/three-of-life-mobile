@@ -4,6 +4,7 @@ import { Root } from "native-base";
 import { Font, AppLoading } from "expo";
 
 import Login from './app/components/Login'
+import Garden from './app/components/Garden'
 
 export default class App extends React.Component {
   constructor(props) {
@@ -27,7 +28,7 @@ export default class App extends React.Component {
       );
     }
     return (
-      <Login />
+      <Garden />
     );
   }
 }

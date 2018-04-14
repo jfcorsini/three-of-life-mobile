@@ -4,7 +4,7 @@ import { Container, Content, Text, Label, Input, Button, Item } from 'native-bas
 
 const styles = StyleSheet.create({
   cellContainer: {
-    backgroundColor: '#F5FCFF',
+    backgroundColor: '#fff',
     flex: 1,
     justifyContent: 'center',
     marginVertical: 10,
