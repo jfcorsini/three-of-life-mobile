@@ -189,7 +189,9 @@ export default class GardenScreen extends Component {
           </View>
           
           <View style={styles.footer}>
+          {this.state.hasTree && (
             <TreeButton button={seedButton}  onPress={this.createTree} style={styles.logOutButton}/>
+          )}
             <TreeButton button={waterButton}  onPress={this.updateTree} style={styles.logOutButton}/>
             <TreeButton button={shamanButton}  onPress={this.onPress} style={styles.logOutButton}/>
             <TreeButton button={logoutButton}  onPress={this.onPress} style={styles.logOutButton}/>
