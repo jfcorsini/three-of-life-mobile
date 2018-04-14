@@ -48,6 +48,22 @@ const styles = StyleSheet.create({
     height: 60,
     width: 60,
   },
+  contentContainer: {
+    flex: 1 // pushes the footer to the end of the screen
+  },
+  footer: {
+    height: 65,
+    'flexDirection': 'row',
+    justifyContent: 'space-evenly',
+  },
+  logOutButton: {
+    alignSelf: 'flex-end',
+  },
+  'topbar': {
+    'flexDirection': 'row',
+    'flex': 1,
+  }
+
 });
 
 
@@ -58,9 +74,9 @@ class TreeButton extends Component {
   }
 
   render() {
-      return (
+    return (
       <TouchableOpacity onPress={this.props.onPress}>
-        <Image style={styles.treeButton} source={this.props.button}/>
+      <Image style={styles.treeButton} source={this.props.button}/>
       </TouchableOpacity>
       );
   }
@@ -81,10 +97,24 @@ export default class GardenScreen extends Component {
 
       <ImageBackground source={this.props.tree} style={styles.mainImage}>
 
+      <View  style={{flex: 1}}>
 
-      <TreeButton button={logoutButton}  onPress={this.onPress}/>
+      <View style={styles.topbar}>
 
-      <Text style={styles.header}>CC</Text>
+      </View>
+
+      <View style={styles.contentContainer}>
+      </View>
+
+      <View style={styles.footer}>
+      <TreeButton button={logoutButton}  onPress={this.onPress} style={styles.logOutButton}/>
+      <TreeButton button={logoutButton}  onPress={this.onPress} style={styles.logOutButton}/>
+      <TreeButton button={logoutButton}  onPress={this.onPress} style={styles.logOutButton}/>
+      <TreeButton button={logoutButton}  onPress={this.onPress} style={styles.logOutButton}/>
+      </View>
+
+      </View>
+
       </ImageBackground>
 
       );
