@@ -13,9 +13,7 @@ export default class App extends Component {
     super(props);
     this.state = {
       loading: true,
-      currentTree:{
-        uri: 'https://s3.eu-central-1.amazonaws.com/treeoflifesuperapp/Trees/garden_day.png'
-      }
+      defaultBackground: 'https://s3.eu-central-1.amazonaws.com/treeoflifesuperapp/Trees/garden_day.png',
     };
 
     this.logIn = this.logIn.bind(this);
@@ -55,7 +53,7 @@ export default class App extends Component {
 
     if (this.state.loggedIn) {
 
-      return <Garden tree={this.state.currentTree}/>;
+      return <Garden defaultBackground={this.state.defaultBackground}/>;
     }
 
     return <Login logIn = { this.logIn } />;
