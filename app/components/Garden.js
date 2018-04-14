@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import {Text, View, Image, StyleSheet, ImageBackground, TouchableOpacity} from 'react-native';
 import SvgUri from 'react-native-svg-uri';
 
+import storage from '../lib/storage';
+import axios from 'axios';
+
 const resizeMode = 'center';
 
 const styles = StyleSheet.create({
@@ -63,8 +66,6 @@ const styles = StyleSheet.create({
 
 });
 
-
-
 class TreeButton extends Component {
   constructor(props) {
     super(props);
@@ -82,11 +83,79 @@ class TreeButton extends Component {
 export default class GardenScreen extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      background: '',
+      death: null,
+    }
   }
 
   onPress() {
     return "heeloo";
-  } 
+  }
+
+  createTree() {
+    storage.load({
+      key: 'jwt'
+    })
+      .then((jwt) => {
+        const uri = 'https://85yfxbqh90.execute-api.eu-central-1.amazonaws.com/dev/tree/create';
+        axios.post(uri, {}, { headers: { Authorization: jwt } })
+          .then((response) => {
+            if (response.status !== 201) {
+              console.log('Creating tree failed. Status is ', response.status);
+              return;
+            }
+            this.setState({hasTree: true});
+            storage.save({
+              key: 'tree',
+              data: true,
+              expires: null,
+            });
+          })
+          .catch((err) => {
+            console.log('Something weird happened when creating tree', err);
+          });
+      });
+  }
+
+  updateTree() {
+    storage.load({
+      key: 'jwt'
+    })
+      .then((jwt) => {
+        const uri = 'https://85yfxbqh90.execute-api.eu-central-1.amazonaws.com/dev/tree/update';
+        axios.post(uri, {}, { headers: { Authorization: jwt } })
+          .then((response) => {
+            if (response.status !== 200) {
+              console.log('Updating tree failed. Status is ', response.status, 'and data is', response.data);
+              return;
+            }
+            this.setState({
+              background: response.data.image,
+              death: response.data.death,
+            })
+          })
+          .catch((err) => {
+            console.log('Something weird happened when creating tree', err);
+          });
+      });
+  }
+
+  async componentWillMount() {
+    await storage.load({
+      key: 'tree',
+      autoSync: false,
+      syncInBackground: false,
+      expi
+    })
+    .then(() => {
+      this.setState({ hasTree: true });
+    })
+    .catch((err) => {
+      this.setState({ hasTree: false });
+    });
+  }
+
   render() {
     let seedButton={ 'uri': 'https://s3.eu-central-1.amazonaws.com/treeoflifesuperapp/Buttons/seed_button.png'};
 
@@ -96,30 +165,40 @@ export default class GardenScreen extends Component {
 
     let shamanButton = { 'uri': 'https://s3.eu-central-1.amazonaws.com/treeoflifesuperapp/Buttons/summon_shaman_button.png'};
 
-    return (
 
-      <ImageBackground source={this.props.tree} style={styles.mainImage}>
-
-      <View  style={{flex: 1}}>
-
-      <View style={styles.topbar}>
-
-      </View>
-
-      <View style={styles.contentContainer}>
-      </View>
-
-      <View style={styles.footer}>
-      <TreeButton button={seedButton}  onPress={this.onPress} style={styles.logOutButton}/>
-      <TreeButton button={waterButton}  onPress={this.onPress} style={styles.logOutButton}/>
-      <TreeButton button={shamanButton}  onPress={this.onPress} style={styles.logOutButton}/>
-      <TreeButton button={logoutButton}  onPress={this.onPress} style={styles.logOutButton}/>
-      </View>
-
-      </View>
-
-      </ImageBackground>
-
+    if (this.state.death) {
+      return (
+        <ImageBackground source={{ uri: this.state.background }} style={styles.mainImage}>
+          <Text style={styles.header}>{ this.state.death }</Text>
+        </ImageBackground>
       );
+    }
+
+    return (
+      <ImageBackground
+        source={{ uri: ((this.state.hasTree) ? this.state.background : this.props.defaultBackground) }}
+        style={styles.mainImage}
+      >
+        <View  style={{flex: 1}}>
+
+          <View style={styles.topbar}>
+          
+          </View>
+          
+          <View style={styles.contentContainer}>
+          </View>
+          
+          <View style={styles.footer}>
+            <TreeButton button={seedButton}  onPress={this.createTree} style={styles.logOutButton}/>
+            <TreeButton button={waterButton}  onPress={this.updateTree} style={styles.logOutButton}/>
+            <TreeButton button={shamanButton}  onPress={this.onPress} style={styles.logOutButton}/>
+            <TreeButton button={logoutButton}  onPress={this.onPress} style={styles.logOutButton}/>
+          </View>
+        
+        </View>
+      
+      </ImageBackground>
+    );
   }
 }
+
