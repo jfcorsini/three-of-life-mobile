@@ -73,6 +73,8 @@ export default class GardenScreen extends Component {
       background: '',
       death: null,
     }
+    this.updateTree = this.updateTree.bind(this); //add this line
+    this.createTree = this.createTree.bind(this); //add this line
   }
 
   onPress() {
@@ -97,6 +99,8 @@ export default class GardenScreen extends Component {
               data: true,
               expires: null,
             });
+
+            this.updateTree();
           })
           .catch((err) => {
             console.log('Something weird happened when creating tree', err);
@@ -116,8 +120,9 @@ export default class GardenScreen extends Component {
               console.log('Updating tree failed. Status is ', response.status, 'and data is', response.data);
               return;
             }
+            console.log("Setting background to", response.data.image, `https://s3.eu-central-1.amazonaws.com/treeoflifesuperapp/Trees/${response.data.image}.png`);
             this.setState({
-              background: response.data.image,
+              background: `https://s3.eu-central-1.amazonaws.com/treeoflifesuperapp/Trees/${response.data.image}.png`,
               death: response.data.death,
             })
           })
@@ -168,7 +173,7 @@ export default class GardenScreen extends Component {
         <View  style={{flex: 1}}>
 
           <View style={styles.topbar}>
-          
+
           </View>
           
           <View style={styles.contentContainer}>
