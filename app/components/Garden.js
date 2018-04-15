@@ -1,24 +1,12 @@
 import React, { Component } from 'react';
 import {Text, View, Image, StyleSheet, ImageBackground, TouchableOpacity} from 'react-native';
 import SvgUri from 'react-native-svg-uri';
+import axios from 'axios';
 
 import storage from '../lib/storage';
 import TreeButton from './TreeButton';
-import axios from 'axios';
-
-const resizeMode = 'center';
 
 const styles = StyleSheet.create({
-  cellContainer: {
-    backgroundColor: '#fff',
-    flex: 1,
-    justifyContent: 'center',
-    marginVertical: 10,
-    marginHorizontal: 40,
-  },
-  item: {
-    margin: 10,
-  },
   mainImage: {
     flex:1,
     resizeMode: 'cover',
@@ -28,36 +16,14 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: 'bold',
     marginVertical: 40,
-    color:'white',
-  },
-  button: {
-    marginTop: 70,
-  },
-  message: {
-    fontSize: 14,
-    color: 'red',
-    padding: 5,
-  },
-  anchor: {
-    marginTop: 15,
-    color: 'blue',
-  },
-  logoutButton: {
-    height: 60,
-    width: 60,
-    right: 20,
-    top: 100,
-  },
-  treeButton: {
-    height: 60,
-    width: 60,
+    color: 'white',
   },
   contentContainer: {
     flex: 1 // pushes the footer to the end of the screen
   },
   footer: {
     height: 65,
-    'flexDirection': 'row',
+    flexDirection: 'row',
     justifyContent: 'space-evenly',
   },
   topbar: {
@@ -66,19 +32,19 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class GardenScreen extends Component {
+export default class Garden extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      background: '',
+      background: 'https://s3.eu-central-1.amazonaws.com/three-of-life-images/trees/garden_day.png',
       death: null,
-    }
-    this.updateTree = this.updateTree.bind(this); //add this line
-    this.createTree = this.createTree.bind(this); //add this line
-  }
+      hasTree: false,
+    };
+    this.updateTree();
 
-  onPress() {
-    return "heeloo";
+    this.updateTree = this.updateTree.bind(this);
+    this.createTree = this.createTree.bind(this);
+    this.logOut = this.logOut.bind(this);
   }
 
   createTree() {
@@ -93,14 +59,11 @@ export default class GardenScreen extends Component {
               console.log('Creating tree failed. Status is ', response.status);
               return;
             }
-            this.setState({hasTree: true});
-            storage.save({
-              key: 'tree',
-              data: true,
-              expires: null,
+            this.setState({
+              hasTree: true,
+              background: `https://s3.eu-central-1.amazonaws.com/three-of-life-images/trees/${response.data.image}.png`,
+              death: response.data.death,
             });
-
-            this.updateTree();
           })
           .catch((err) => {
             console.log('Something weird happened when creating tree', err);
@@ -120,11 +83,11 @@ export default class GardenScreen extends Component {
               console.log('Updating tree failed. Status is ', response.status, 'and data is', response.data);
               return;
             }
-            console.log("Setting background to", response.data.image, `https://s3.eu-central-1.amazonaws.com/treeoflifesuperapp/Trees/${response.data.image}.png`);
             this.setState({
-              background: `https://s3.eu-central-1.amazonaws.com/treeoflifesuperapp/Trees/${response.data.image}.png`,
+              background: `https://s3.eu-central-1.amazonaws.com/three-of-life-images/trees/${response.data.image}.png`,
               death: response.data.death,
-            })
+              hasTree: true,
+            });
           })
           .catch((err) => {
             console.log('Something weird happened when updating tree', err);
@@ -132,34 +95,22 @@ export default class GardenScreen extends Component {
       });
   }
 
-  async componentWillMount() {
-    await storage.load({
-      key: 'tree',
-      autoSync: false,
-      syncInBackground: false,
-      expires: null,
-    })
-    .then(() => {
-      this.setState({ hasTree: true });
-    })
-    .catch((err) => {
-      this.setState({ hasTree: false });
-    });
+  logOut() {
+    this.props.logOut();
   }
 
   render() {
-    let seedButton={ 'uri': 'https://s3.eu-central-1.amazonaws.com/treeoflifesuperapp/Buttons/seed_button.png'};
-
-    let waterButton={ 'uri': 'https://s3.eu-central-1.amazonaws.com/treeoflifesuperapp/Buttons/water_button.png'};
-
-    let logoutButton={ 'uri': 'https://s3.eu-central-1.amazonaws.com/treeoflifesuperapp/Buttons/account_button.png'};
-
-    let shamanButton = { 'uri': 'https://s3.eu-central-1.amazonaws.com/treeoflifesuperapp/Buttons/summon_shaman_button.png'};
-
+    const seedButton = 'https://s3.eu-central-1.amazonaws.com/three-of-life-images/buttons/seed_button.png';
+    const waterButton = 'https://s3.eu-central-1.amazonaws.com/three-of-life-images/buttons/water_button.png';
+    const shamanButton = 'https://s3.eu-central-1.amazonaws.com/three-of-life-images/buttons/summon_shaman_button.png';
+    const logoutButton = 'https://s3.eu-central-1.amazonaws.com/three-of-life-images/buttons/account_button.png';
 
     if (this.state.death) {
       return (
-        <ImageBackground source={{ uri: this.state.background }} style={styles.mainImage}>
+        <ImageBackground
+        source={{ uri: this.state.background }}
+        style={styles.mainImage}
+        >
           <Text style={styles.header}>{ this.state.death }</Text>
         </ImageBackground>
       );
@@ -167,13 +118,12 @@ export default class GardenScreen extends Component {
 
     return (
       <ImageBackground
-        source={{ uri: ((this.state.hasTree) ? this.state.background : this.props.defaultBackground) }}
+        source={{ uri: this.state.background }}
         style={styles.mainImage}
       >
-        <View  style={{flex: 1}}>
+        <View  style={{ flex: 1 }}>
 
           <View style={styles.topbar}>
-
           </View>
           
           <View style={styles.contentContainer}>
@@ -181,11 +131,15 @@ export default class GardenScreen extends Component {
           
           <View style={styles.footer}>
           {!this.state.hasTree && (
-            <TreeButton button={seedButton}  onPress={this.createTree} style={styles.logOutButton}/>
+            <TreeButton action={this.createTree} image={seedButton} />
           )}
-            <TreeButton button={waterButton}  onPress={this.updateTree} style={styles.logOutButton}/>
-            <TreeButton button={shamanButton}  onPress={this.onPress} style={styles.logOutButton}/>
-            <TreeButton button={logoutButton}  onPress={this.onPress} style={styles.logOutButton}/>
+          {!!this.state.hasTree && (
+            <TreeButton action={this.updateTree} image={waterButton} />
+          )}
+          {!!this.state.hasTree && (
+            <TreeButton action={this.updateTree} image={shamanButton} />
+          )}
+            <TreeButton action={this.logOut} image={logoutButton} />
           </View>
         
         </View>
@@ -194,4 +148,3 @@ export default class GardenScreen extends Component {
     );
   }
 }
-

@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
-import {Text, View, Image, StyleSheet, ImageBackground, TouchableOpacity} from 'react-native';
-
+import {Image, StyleSheet, TouchableOpacity} from 'react-native';
 
 const styles = StyleSheet.create({
-    treeButton: {
+    button: {
       height: 60,
       width: 60,
     },
-  });
+});
 
 export default class TreeButton extends Component {
     constructor(props) {
@@ -16,8 +15,8 @@ export default class TreeButton extends Component {
   
     render() {
       return (
-        <TouchableOpacity onPress={this.props.onPress}>
-        <Image style={styles.treeButton} source={this.props.button}/>
+        <TouchableOpacity onPress={this.props.action}>
+          <Image style={styles.button} source={{ uri: this.props.image }}/>
         </TouchableOpacity>
         );
     }

@@ -13,14 +13,24 @@ export default class App extends Component {
     super(props);
     this.state = {
       loading: true,
-      defaultBackground: 'https://s3.eu-central-1.amazonaws.com/treeoflifesuperapp/Trees/garden_day.png',
     };
 
     this.logIn = this.logIn.bind(this);
+    this.logOut = this.logOut.bind(this);
   }
 
   logIn() {
     this.setState({ loggedIn: true });
+  }
+
+  logOut() {
+    this.setState({ loggedIn: false });
+    storage.remove({
+      key: 'jwt',
+    });
+    storage.remove({
+      key: 'tree',
+    });
   }
 
   async componentWillMount() {
@@ -52,8 +62,7 @@ export default class App extends Component {
     }
 
     if (this.state.loggedIn) {
-
-      return <Garden defaultBackground={this.state.defaultBackground}/>;
+      return <Garden logOut = { this.logOut } />;
     }
 
     return <Login logIn = { this.logIn } />;
